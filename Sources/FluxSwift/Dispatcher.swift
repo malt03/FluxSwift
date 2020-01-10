@@ -9,21 +9,21 @@ import Foundation
 import RxSwift
 import RxRelay
 
-public final class Dispatcher {
-    public static let shared = Dispatcher()
+final class Dispatcher {
+    static let shared = Dispatcher()
     private init() {}
     
-    public func register<StoreType: Store>(_ store: StoreType) -> RegisteredStore<StoreType> {
+    func register<StoreType: Store>(_ store: StoreType) -> RegisteredStore<StoreType> {
         let registered = RegisteredStore(entity: store)
         storeHolder(for: StoreType.self).append(store: registered)
         return registered
     }
     
-    public func dispatch<ActionType: Action>(_ action: ActionType) {
+    func dispatch<ActionType: Action>(_ action: ActionType) {
         storeHolder(for: ActionType.StoreType.self).apply(action: action)
     }
     
-    public func dispatch<ActionType: ThrowsAction>(_ action: ActionType) throws {
+    func dispatch<ActionType: ThrowsAction>(_ action: ActionType) throws {
         try storeHolder(for: ActionType.StoreType.self).apply(action: action)
     }
     
