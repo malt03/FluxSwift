@@ -9,5 +9,11 @@ import Foundation
 import RxSwift
 
 public protocol Store {
+    var children: [AnyRegisteredStore] { get }
+}
+
+extension Store {
+    public func register() -> RegisteredStore<Self> { Dispatcher.shared.register(self) }
     
+    public var children: [AnyRegisteredStore] { [] }
 }
