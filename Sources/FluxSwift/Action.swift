@@ -12,7 +12,15 @@ public protocol Action {
     func reduce(store: StoreType) -> StoreType?
 }
 
+extension Action {
+    public func run() { Dispatcher.shared.dispatch(self) }
+}
+
 public protocol ThrowsAction {
     associatedtype StoreType: Store
     func reduce(store: StoreType) throws -> StoreType?
+}
+
+extension ThrowsAction {
+    public func run() throws { try Dispatcher.shared.dispatch(self) }
 }

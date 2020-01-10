@@ -19,24 +19,92 @@ class FluxSwiftTests: XCTestCase {
     }
 
     func testExample() {
-        let parent = Parent(counter: 0, childCounter: 100).register()
+        let parent = Parent(counter: 0, child1Counter: 2, child2Counter: 4).register()
         var parentCounter = 0
+        var child1Counter = 0
+        var child2Counter = 0
         
         let parentDisposable = parent.subscribe(onNext: { (parent) in
             parentCounter += 1
             
             switch parentCounter {
             case 1:
-                XCTAssertEqual(parent.counter, 0)
-                XCTAssertEqual(parent.child1.entity.counter, 100)
-                XCTAssertEqual(parent.child2.entity.counter, 100)
+                XCTAssertEqual(0, parent.counter)
+                XCTAssertEqual(2, parent.child1.entity.counter)
+                XCTAssertEqual(4, parent.child2.entity.counter)
+            case 2:
+                XCTAssertEqual(0, parent.counter)
+                XCTAssertEqual(3, parent.child1.entity.counter)
+                XCTAssertEqual(4, parent.child2.entity.counter)
+            case 3:
+                XCTAssertEqual(0, parent.counter)
+                XCTAssertEqual(3, parent.child1.entity.counter)
+                XCTAssertEqual(5, parent.child2.entity.counter)
+            case 4:
+                XCTAssertEqual(1, parent.counter)
+                XCTAssertEqual(3, parent.child1.entity.counter)
+                XCTAssertEqual(5, parent.child2.entity.counter)
+            case 5:
+                XCTAssertEqual(1, parent.counter)
+                XCTAssertEqual(4, parent.child1.entity.counter)
+                XCTAssertEqual(5, parent.child2.entity.counter)
+            case 6:
+                XCTAssertEqual(1, parent.counter)
+                XCTAssertEqual(4, parent.child1.entity.counter)
+                XCTAssertEqual(6, parent.child2.entity.counter)
+            case 7:
+                XCTAssertEqual(2, parent.counter)
+                XCTAssertEqual(4, parent.child1.entity.counter)
+                XCTAssertEqual(6, parent.child2.entity.counter)
             default:
                 XCTAssert(false, "counter: \(parentCounter)")
             }
         })
         
-        XCTAssertEqual(parentCounter, 1)
+        let child1Disposable = parent.entity.child1.subscribe(onNext: { (child1) in
+            child1Counter += 1
+
+            switch child1Counter {
+            case 1:
+                XCTAssertEqual(2, child1.counter)
+            case 2:
+                XCTAssertEqual(3, child1.counter)
+            case 3:
+                XCTAssertEqual(4, child1.counter)
+            default:
+                XCTAssert(false, "counter: \(child1Counter)")
+            }
+        })
+        
+        let child2Disposable = parent.entity.child2.subscribe(onNext: { (child2) in
+            child2Counter += 1
+
+            switch child2Counter {
+            case 1:
+                XCTAssertEqual(4, child2.counter)
+            case 2:
+                XCTAssertEqual(5, child2.counter)
+            case 3:
+                XCTAssertEqual(6, child2.counter)
+            default:
+                XCTAssert(false, "counter: \(child2Counter)")
+            }
+        })
+        
+        Child1.Increment().run()
+        Child2.Increment().run()
+        Parent.Increment().run()
+        Child1.Increment().run()
+        Child2.Increment().run()
+        Parent.Increment().run()
+
+        XCTAssertEqual(7, parentCounter)
+        XCTAssertEqual(3, child1Counter)
+        XCTAssertEqual(3, child2Counter)
+        
         parentDisposable.dispose()
+        child1Disposable.dispose()
+        child2Disposable.dispose()
     }
 }
 
@@ -45,13 +113,13 @@ struct Parent: Store {
     let child1: RegisteredStore<Child1>
     let child2: RegisteredStore<Child2>
     
-    var children: [AnyRegisteredStore] { [child1.any(), child2.any()] }
+    var childStores: [AnyRegisteredStore] { [child1.any(), child2.any()] }
     
-    init(counter: Int, childCounter: Int) {
+    init(counter: Int, child1Counter: Int, child2Counter: Int) {
         self.counter = counter
         
-        self.child1 =  Child1(counter: childCounter).register()
-        self.child2 =  Child2(counter: childCounter).register()
+        self.child1 = Child1(counter: child1Counter).register()
+        self.child2 = Child2(counter: child2Counter).register()
     }
     
     struct Increment: Action {

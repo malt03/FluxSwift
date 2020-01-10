@@ -38,7 +38,7 @@ public final class RegisteredStore<StoreType: Store>: ObservableType {
     
     private var childrenBag = DisposeBag()
     private func observeChildren() {
-        let disposables = entity.children.map {
+        let disposables = entity.childStores.map {
             $0.didUpdate.subscribe(onNext: { [weak self] _ in
                 guard let s = self else { return }
                 s.updateStore(s.entity)
