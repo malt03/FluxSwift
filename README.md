@@ -1,6 +1,6 @@
 # FluxSwift [![Build Status](https://travis-ci.org/malt03/FluxSwift.svg?branch=master)](https://travis-ci.org/malt03/FluxSwift) [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-4BC51D.svg)](https://github.com/apple/swift-package-manager) ![License](https://img.shields.io/github/license/malt03/FluxSwift.svg)
 
-FluxSwift is a completly typesafe Flux implementation using RxSwift.
+FluxSwift is a completly typesafe Flux implementation using RxSwift.  
 Unlike Redux, Store is not a singleton.
 
 ## Usage
@@ -13,7 +13,7 @@ struct User: Store {
 ```
 
 ### Action
-In FluxSwift, unlike normal Flux, a reduce function is defined in Action.
+In FluxSwift, unlike normal Flux, a reduce function is defined in Action.  
 This provides a type-safe implementation and prevents Fat Store.
 
 ```swift
@@ -36,7 +36,7 @@ ChangeName(newName: "malt04").run() // dispatch
 ```
 
 ### Define a nested Store
-Set the value of childStores, an instance variable that conforms to the Store protocol.
+Set the value of childStores, an instance variable that conforms to the Store protocol.  
 If implemented as follows, when user is changed, the change will be detected in Session.
 
 ```swift
