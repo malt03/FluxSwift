@@ -32,7 +32,7 @@ struct ChangeName: Action {
 let user: RegisteredStore<User> = User(name: "malt03").register() // register the store to Dispatcher
 print(user.entity.name) // "malt03"
 let disposable = user.subscribe(onNext: { (user) in print(user.name) }) //
-ChangeName(newName: "malt04").run() // dispatch
+ChangeName(newName: "malt04").apply() // dispatch
 ```
 
 ### Define a nested Store
@@ -92,7 +92,7 @@ struct ChangeName: ThrowsAction {
         return store
     }
 }
-try ChangeNameFromFile(nameFile: url).run()
+try ChangeNameFromFile(nameFile: url).apply()
 ```
 
 ## Installation
