@@ -19,7 +19,7 @@ This provides a type-safe implementation and prevents Fat Store.
 ```swift
 struct ChangeName: Action {
     let newName: String
-    func reduce(store: User) -> User? {
+    func reduce(store: User) -> User? { // If you don't apply the Action to the Store, you can return nil.
         var tmp = store
         tmp.name = newName
         return tmp
