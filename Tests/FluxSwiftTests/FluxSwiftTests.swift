@@ -88,6 +88,9 @@ class FluxSwiftTests: XCTestCase {
         Child1.Increment().apply()
         Child2.Increment().apply()
         Parent.Increment().apply()
+        
+        Parent.NoChange().apply()
+        Child1.NoChange().apply()
 
         XCTAssertEqual(7, parentCounter)
         XCTAssertEqual(3, child1Counter)
@@ -119,6 +122,10 @@ class FluxSwiftTests: XCTestCase {
                 return tmp
             }
         }
+        
+        struct NoChange: Action {
+            func reduce(store: Parent) -> Parent? { nil }
+        }
     }
     
     struct Child1: Store {
@@ -130,6 +137,10 @@ class FluxSwiftTests: XCTestCase {
                 tmp.counter += 1
                 return tmp
             }
+        }
+
+        struct NoChange: Action {
+            func reduce(store: Child1) -> Child1? { nil }
         }
     }
     
