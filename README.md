@@ -48,6 +48,31 @@ struct Session: Store {
 }
 ```
 
+### IdentifiableStore
+By conforming to the IdentifiableStore Protocol, you can apply an Action only to the Store with the specified ID.
+
+```swift
+struct IdentifiableCounter: IdentifiableStore {
+    let id: String
+    var count = 0
+    
+    struct Increment: Action {
+        func reduce(store: IdentifiableCounter) -> IdentifiableCounter? {
+            var tmp = store
+            tmp.count += 1
+            return tmp
+        }
+    }
+}
+
+let a = IdentifiableCounter(id: "a").register()
+let b = IdentifiableCounter(id: "b").register()
+IdentifiableCounter.Increment().apply(to: "a")
+IdentifiableCounter.Increment().apply()
+print(a.entity.count) // 2
+print(b.entity.count) // 1
+```
+
 ### Store with Codable
 RegisteredStore also complies with Codable when Store conforms to Codable Protocol.
 
