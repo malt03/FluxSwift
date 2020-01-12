@@ -100,6 +100,24 @@ class IdentifiableActionTests: XCTestCase {
         XCTAssertEqual(3, countFor2)
         XCTAssertEqual(5, countFor4)
     }
+    
+    func testSameId() {
+        let counter0 = Counter(id: 0, count: 0).register()
+        let counter1 = Counter(id: 0, count: 1).register()
+        let otherIdCounter = Counter(id: 1, count: 10).register()
+        
+        Counter.Increment().dispatch()
+        
+        XCTAssertEqual(1, counter0.entity.count)
+        XCTAssertEqual(2, counter1.entity.count)
+        XCTAssertEqual(11, otherIdCounter.entity.count)
+        
+        Counter.Increment().dispatch(to: 0)
+
+        XCTAssertEqual(2, counter0.entity.count)
+        XCTAssertEqual(3, counter1.entity.count)
+        XCTAssertEqual(11, otherIdCounter.entity.count)
+    }
 
     struct Counter: IdentifiableStore {
         let id: Int

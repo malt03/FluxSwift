@@ -22,6 +22,7 @@ class ThrowsActionTests: XCTestCase {
     
     func testIdentifiable() {
         do {
+            XCTAssertNoThrow(try IdentifiableCounter.MyThrowAction().dispatch(to: 0))
             XCTAssertNoThrow(try IdentifiableCounter.MyThrowAction().dispatch())
             let counter0 = IdentifiableCounter(id: 0, count: 0).register()
             let counter1 = IdentifiableCounter(id: 1, count: 1).register()

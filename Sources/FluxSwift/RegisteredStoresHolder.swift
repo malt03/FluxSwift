@@ -18,11 +18,11 @@ protocol RegisteredStoresHolder {
 
 extension RegisteredStoresHolder {
     func apply<ActionType: Action>(action: ActionType) where ActionType.StoreType == StoreType {
-        each { $0.dispatch(action: action) }
+        each { $0.apply(action: action) }
     }
     
     func apply<ActionType: ThrowsAction>(action: ActionType) throws where ActionType.StoreType == StoreType {
-        try each { try $0.dispatch(action: action) }
+        try each { try $0.apply(action: action) }
     }
 }
 
@@ -47,35 +47,33 @@ final class RegisteredUnidentifiableStoresHolder<StoreType: Store>: RegisteredSt
 
 final class RegisteredIdentifiableStoresHolder<StoreType: IdentifiableStore>: RegisteredStoresHolder {
     typealias RegisteredStoreType = RegisteredStore<StoreType>
-    private var weakStores = [StoreType.ID: WeakHolder<RegisteredStoreType>]()
+    private var weakStoresDict = [StoreType.ID: [WeakHolder<RegisteredStoreType>]]()
     
     func append(store: RegisteredStoreType) {
-        weakStores[store.entity.id] = WeakHolder(value: store)
+        weakStoresDict[store.entity.id, default: []].append(WeakHolder(value: store))
     }
     
     func apply<ActionType: Action>(action: ActionType, to id: StoreType.ID) where ActionType.StoreType == StoreType {
-        guard let store = weakStores[id]?.value else {
-            weakStores.removeValue(forKey: id)
-            return
-        }
-        store.dispatch(action: action)
+        each(for: id) { $0.apply(action: action) }
     }
     
     func apply<ActionType: ThrowsAction>(action: ActionType, to id: StoreType.ID) throws where ActionType.StoreType == StoreType {
-        guard let store = weakStores[id]?.value else {
-            weakStores.removeValue(forKey: id)
-            return
-        }
-        try store.dispatch(action: action)
+        try each(for: id) { try $0.apply(action: action) }
     }
-
-    func each(handler: (RegisteredStoreType) throws -> Void) rethrows {
-        for (key, weakStore) in weakStores {
+    
+    private func each(for id: StoreType.ID, handler: (RegisteredStoreType) throws -> Void) rethrows {
+        for (index, weakStore) in (weakStoresDict[id] ?? []).enumerated().reversed() {
             if let store = weakStore.value {
                 try handler(store)
             } else {
-                weakStores.removeValue(forKey: key)
+                weakStoresDict[id]?.remove(at: index)
             }
+        }
+    }
+
+    func each(handler: (RegisteredStoreType) throws -> Void) rethrows {
+        for id in weakStoresDict.keys {
+            try each(for: id, handler: handler)
         }
     }
 }
