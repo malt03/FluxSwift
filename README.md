@@ -83,7 +83,7 @@ print(JSONDecoder().decode(RegisteredStore<User>.self, from: json).entity.name) 
 ```
 
 ### ThrowsAction
-```
+```swift
 struct ChangeName: ThrowsAction {
     let newName: String
     func reduce(store: User) -> User? {
