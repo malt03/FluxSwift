@@ -19,7 +19,7 @@ This provides a type-safe implementation and prevents Fat Store.
 ```swift
 struct ChangeName: Action {
     let newName: String
-    func reduce(store: User) -> User? { // If you don't apply the Action to the Store, you can return nil.
+    func reduce(store: User) -> User? { // If you don't dispatch the Action to the Store, you can return nil.
         var tmp = store
         tmp.name = newName
         return tmp
@@ -32,7 +32,7 @@ struct ChangeName: Action {
 let user: RegisteredStore<User> = User(name: "malt03").register() // register the store to Dispatcher
 print(user.entity.name) // "malt03"
 let disposable = user.subscribe(onNext: { (user) in print(user.name) }) // subscribe
-ChangeName(newName: "malt04").apply() // dispatch
+ChangeName(newName: "malt04").dispatch() // dispatch
 ```
 
 ### Define a nested Store
@@ -49,7 +49,7 @@ struct Session: Store {
 ```
 
 ### IdentifiableStore
-By conforming to the IdentifiableStore Protocol, you can apply an Action only to the Store with the specified ID.
+By conforming to the IdentifiableStore Protocol, you can dispatch an Action only to the Store with the specified ID.
 
 ```swift
 struct IdentifiableCounter: IdentifiableStore {
@@ -67,8 +67,8 @@ struct IdentifiableCounter: IdentifiableStore {
 
 let a = IdentifiableCounter(id: "a").register()
 let b = IdentifiableCounter(id: "b").register()
-IdentifiableCounter.Increment().apply(to: "a")
-IdentifiableCounter.Increment().apply()
+IdentifiableCounter.Increment().dispatch(to: "a")
+IdentifiableCounter.Increment().dispatch()
 print(a.entity.count) // 2
 print(b.entity.count) // 1
 ```
@@ -92,7 +92,7 @@ struct ChangeName: ThrowsAction {
         return store
     }
 }
-try ChangeNameFromFile(nameFile: url).apply()
+try ChangeNameFromFile(nameFile: url).dispatch()
 ```
 
 ## Installation

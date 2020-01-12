@@ -13,12 +13,12 @@ public protocol Action {
 }
 
 extension Action where StoreType: Store {
-    public func apply() { Dispatcher.shared.dispatch(self) }
+    public func dispatch() { Dispatcher.shared.dispatch(self) }
 }
 
 extension Action where StoreType: IdentifiableStore {
-    public func apply() { Dispatcher.shared.dispatch(self) }
-    public func apply(to id: StoreType.ID) { Dispatcher.shared.dispatch(self, to: id) }
+    public func dispatch() { Dispatcher.shared.dispatch(self) }
+    public func dispatch(to id: StoreType.ID) { Dispatcher.shared.dispatch(self, to: id) }
 }
 
 public protocol ThrowsAction {
@@ -27,10 +27,10 @@ public protocol ThrowsAction {
 }
 
 extension ThrowsAction where StoreType: Store {
-    public func apply() throws { try Dispatcher.shared.dispatch(self) }
+    public func dispatch() throws { try Dispatcher.shared.dispatch(self) }
 }
 
 extension ThrowsAction where StoreType: IdentifiableStore {
-    public func apply() throws { try Dispatcher.shared.dispatch(self) }
-    public func apply(to id: StoreType.ID) throws { try Dispatcher.shared.dispatch(self, to: id) }
+    public func dispatch() throws { try Dispatcher.shared.dispatch(self) }
+    public func dispatch(to id: StoreType.ID) throws { try Dispatcher.shared.dispatch(self, to: id) }
 }

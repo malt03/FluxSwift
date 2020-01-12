@@ -11,30 +11,30 @@ import XCTest
 class ThrowsActionTests: XCTestCase {
     func testUnidentifiable() {
         do {
-            XCTAssertNoThrow(try Counter.MyThrowAction().apply())
+            XCTAssertNoThrow(try Counter.MyThrowAction().dispatch())
             let counter = Counter(count: 0).register()
-            XCTAssertThrowsError(try Counter.MyThrowAction().apply())
-            XCTAssertNoThrow(try Counter.Increment().apply())
+            XCTAssertThrowsError(try Counter.MyThrowAction().dispatch())
+            XCTAssertNoThrow(try Counter.Increment().dispatch())
             XCTAssertEqual(1, counter.entity.count)
         }
-        XCTAssertNoThrow(try Counter.MyThrowAction().apply())
+        XCTAssertNoThrow(try Counter.MyThrowAction().dispatch())
     }
     
     func testIdentifiable() {
         do {
-            XCTAssertNoThrow(try IdentifiableCounter.MyThrowAction().apply())
+            XCTAssertNoThrow(try IdentifiableCounter.MyThrowAction().dispatch())
             let counter0 = IdentifiableCounter(id: 0, count: 0).register()
             let counter1 = IdentifiableCounter(id: 1, count: 1).register()
-            XCTAssertThrowsError(try IdentifiableCounter.MyThrowAction().apply())
-            XCTAssertNoThrow(try IdentifiableCounter.Increment().apply())
+            XCTAssertThrowsError(try IdentifiableCounter.MyThrowAction().dispatch())
+            XCTAssertNoThrow(try IdentifiableCounter.Increment().dispatch())
             XCTAssertEqual(1, counter0.entity.count)
             XCTAssertEqual(2, counter1.entity.count)
-            XCTAssertNoThrow(try IdentifiableCounter.Increment().apply(to: 1))
+            XCTAssertNoThrow(try IdentifiableCounter.Increment().dispatch(to: 1))
             XCTAssertEqual(1, counter0.entity.count)
             XCTAssertEqual(3, counter1.entity.count)
         }
-        XCTAssertNoThrow(try IdentifiableCounter.MyThrowAction().apply(to: 0))
-        XCTAssertNoThrow(try IdentifiableCounter.MyThrowAction().apply())
+        XCTAssertNoThrow(try IdentifiableCounter.MyThrowAction().dispatch(to: 0))
+        XCTAssertNoThrow(try IdentifiableCounter.MyThrowAction().dispatch())
     }
     
     struct Counter: Store {

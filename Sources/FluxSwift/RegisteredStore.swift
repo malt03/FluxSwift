@@ -21,11 +21,11 @@ public final class RegisteredStore<StoreType: StoreBase>: ObservableType {
     
     private let relay: BehaviorRelay<StoreType>
     
-    func apply<ActionType: Action>(action: ActionType) where ActionType.StoreType == StoreType {
+    func dispatch<ActionType: Action>(action: ActionType) where ActionType.StoreType == StoreType {
         updateStore(action.reduce(store: entity))
     }
     
-    func apply<ActionType: ThrowsAction>(action: ActionType) throws where ActionType.StoreType == StoreType {
+    func dispatch<ActionType: ThrowsAction>(action: ActionType) throws where ActionType.StoreType == StoreType {
         updateStore(try action.reduce(store: entity))
     }
     

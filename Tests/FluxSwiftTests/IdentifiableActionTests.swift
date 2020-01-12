@@ -78,23 +78,23 @@ class IdentifiableActionTests: XCTestCase {
             }).disposed(by: bag)
             
             actionId = 0
-            Counter.Increment().apply(to: 0)
+            Counter.Increment().dispatch(to: 0)
             actionId = 1
-            Counter.Increment().apply()
+            Counter.Increment().dispatch()
             actionId = 2
-            Counter.Increment().apply(to: 4)
+            Counter.Increment().dispatch(to: 4)
             actionId = 3
-            Counter.Increment().apply(to: 4)
+            Counter.Increment().dispatch(to: 4)
             actionId = 4
-            Counter.Increment().apply()
+            Counter.Increment().dispatch()
 
             XCTAssertEqual(3, counters[0].entity.count)
             XCTAssertEqual(4, counters[1].entity.count)
             XCTAssertEqual(8, counters[2].entity.count)
         }
         
-        Counter.Increment().apply(to: 0)
-        Counter.Increment().apply()
+        Counter.Increment().dispatch(to: 0)
+        Counter.Increment().dispatch()
 
         XCTAssertEqual(4, countFor0)
         XCTAssertEqual(3, countFor2)

@@ -18,11 +18,11 @@ protocol RegisteredStoresHolder {
 
 extension RegisteredStoresHolder {
     func apply<ActionType: Action>(action: ActionType) where ActionType.StoreType == StoreType {
-        each { $0.apply(action: action) }
+        each { $0.dispatch(action: action) }
     }
     
     func apply<ActionType: ThrowsAction>(action: ActionType) throws where ActionType.StoreType == StoreType {
-        try each { try $0.apply(action: action) }
+        try each { try $0.dispatch(action: action) }
     }
 }
 
@@ -53,20 +53,20 @@ final class RegisteredIdentifiableStoresHolder<StoreType: IdentifiableStore>: Re
         weakStores[store.entity.id] = WeakHolder(value: store)
     }
     
-    func apply<ActionType: Action>(action: ActionType, to key: StoreType.ID) where ActionType.StoreType == StoreType {
-        guard let store = weakStores[key]?.value else {
-            weakStores.removeValue(forKey: key)
+    func apply<ActionType: Action>(action: ActionType, to id: StoreType.ID) where ActionType.StoreType == StoreType {
+        guard let store = weakStores[id]?.value else {
+            weakStores.removeValue(forKey: id)
             return
         }
-        store.apply(action: action)
+        store.dispatch(action: action)
     }
     
-    func apply<ActionType: ThrowsAction>(action: ActionType, to key: StoreType.ID) throws where ActionType.StoreType == StoreType {
-        guard let store = weakStores[key]?.value else {
-            weakStores.removeValue(forKey: key)
+    func apply<ActionType: ThrowsAction>(action: ActionType, to id: StoreType.ID) throws where ActionType.StoreType == StoreType {
+        guard let store = weakStores[id]?.value else {
+            weakStores.removeValue(forKey: id)
             return
         }
-        try store.apply(action: action)
+        try store.dispatch(action: action)
     }
 
     func each(handler: (RegisteredStoreType) throws -> Void) rethrows {
