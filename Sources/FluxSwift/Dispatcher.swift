@@ -15,52 +15,47 @@ final class Dispatcher {
     
     func register<StoreType: Store>(_ store: StoreType) -> RegisteredStore<StoreType> {
         let registered = RegisteredStore(entity: store)
-        storeHolder(for: StoreType.self).append(store: registered)
+        storeHolder(for: RegisteredUnidentifiableStoresHolder<StoreType>.self).append(store: registered)
         return registered
     }
     
-    func dispatch<ActionType: Action>(_ action: ActionType) {
-        storeHolder(for: ActionType.StoreType.self).apply(action: action)
+    func register<StoreType: IdentifiableStore>(_ store: StoreType) -> RegisteredStore<StoreType> {
+        let registered = RegisteredStore(entity: store)
+        storeHolder(for: RegisteredIdentifiableStoresHolder<StoreType>.self).append(store: registered)
+        return registered
     }
     
-    func dispatch<ActionType: ThrowsAction>(_ action: ActionType) throws {
-        try storeHolder(for: ActionType.StoreType.self).apply(action: action)
+    func dispatch<ActionType: Action>(_ action: ActionType) where ActionType.StoreType: Store {
+        storeHolder(for: RegisteredUnidentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
+    }
+    
+    func dispatch<ActionType: ThrowsAction>(_ action: ActionType) throws where ActionType.StoreType: Store {
+        try storeHolder(for: RegisteredUnidentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
+    }
+    
+    func dispatch<ActionType: Action>(_ action: ActionType) where ActionType.StoreType: IdentifiableStore {
+        storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
+    }
+    
+    func dispatch<ActionType: ThrowsAction>(_ action: ActionType) throws where ActionType.StoreType: IdentifiableStore {
+        try storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
+    }
+    
+    func dispatch<ActionType: Action>(_ action: ActionType, to id: ActionType.StoreType.ID) where ActionType.StoreType: IdentifiableStore {
+        storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action, to: id)
+    }
+    
+    func dispatch<ActionType: ThrowsAction>(_ action: ActionType, to id: ActionType.StoreType.ID) throws where ActionType.StoreType: IdentifiableStore {
+        try storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action, to: id)
     }
     
     private var storeHolders = [String: Any]()
 
-    private func storeHolder<StoreType: Store>(for type: StoreType.Type) -> RegisteredStoresHolder<StoreType> {
-        let key = String(describing: StoreType.self)
-        if let storeHolder = storeHolders[key] as? RegisteredStoresHolder<StoreType> { return storeHolder }
-        let storeHolder = RegisteredStoresHolder<StoreType>()
+    private func storeHolder<HolderType: RegisteredStoresHolder>(for type: HolderType.Type) -> HolderType {
+        let key = String(describing: HolderType.StoreType.self)
+        if let storeHolder = storeHolders[key] as? HolderType { return storeHolder }
+        let storeHolder = HolderType()
         storeHolders[key] = storeHolder
         return storeHolder
-    }
-
-    private final class RegisteredStoresHolder<StoreType: Store> {
-        typealias RegisteredStoreType = RegisteredStore<StoreType>
-        private var weakStores = [WeakHolder<RegisteredStoreType>]()
-        
-        func append(store: RegisteredStoreType) {
-            weakStores.append(WeakHolder(value: store))
-        }
-        
-        func apply<ActionType: Action>(action: ActionType) where ActionType.StoreType == StoreType {
-            each { $0.apply(action: action) }
-        }
-        
-        func apply<ActionType: ThrowsAction>(action: ActionType) throws where ActionType.StoreType == StoreType {
-            try each { try $0.apply(action: action) }
-        }
-        
-        private func each(handler: (RegisteredStoreType) throws -> Void) rethrows {
-            for (index, weakStore) in weakStores.enumerated().reversed() {
-                if let store = weakStore.value {
-                    try handler(store)
-                } else {
-                    weakStores.remove(at: index)
-                }
-            }
-        }
     }
 }

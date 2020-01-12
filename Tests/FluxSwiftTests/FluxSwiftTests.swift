@@ -82,12 +82,12 @@ class FluxSwiftTests: XCTestCase {
             }
         })
         
-        Child1.Increment().run()
-        Child2.Increment().run()
-        Parent.Increment().run()
-        Child1.Increment().run()
-        Child2.Increment().run()
-        Parent.Increment().run()
+        Child1.Increment().apply()
+        Child2.Increment().apply()
+        Parent.Increment().apply()
+        Child1.Increment().apply()
+        Child2.Increment().apply()
+        Parent.Increment().apply()
 
         XCTAssertEqual(7, parentCounter)
         XCTAssertEqual(3, child1Counter)

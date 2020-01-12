@@ -10,7 +10,7 @@ import RxSwift
 public final class AnyRegisteredStore {
     let didUpdate: Observable<Void>
     
-    init<StoreType: Store>(_ registeredStore: RegisteredStore<StoreType>) {
+    init<StoreType: StoreBase>(_ registeredStore: RegisteredStore<StoreType>) {
         didUpdate = registeredStore.didUpdate
     }
 }

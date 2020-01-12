@@ -8,12 +8,8 @@
 import Foundation
 import RxSwift
 
-public protocol Store {
-    var childStores: [AnyRegisteredStore] { get }
-}
+public protocol Store: StoreBase {}
 
 extension Store {
     public func register() -> RegisteredStore<Self> { Dispatcher.shared.register(self) }
-    
-    public var childStores: [AnyRegisteredStore] { [] }
 }

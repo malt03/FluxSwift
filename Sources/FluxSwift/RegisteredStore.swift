@@ -8,7 +8,7 @@
 import RxSwift
 import RxRelay
 
-public final class RegisteredStore<StoreType: Store>: ObservableType {
+public final class RegisteredStore<StoreType: StoreBase>: ObservableType {
     public typealias Element = StoreType
     
     public func subscribe<Observer>(_ observer: Observer) -> Disposable where Observer : ObserverType, Observer.Element == StoreType {
