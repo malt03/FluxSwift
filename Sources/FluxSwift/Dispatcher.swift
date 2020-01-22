@@ -52,7 +52,7 @@ final class Dispatcher {
     private var storeHolders = [String: Any]()
 
     private func storeHolder<HolderType: RegisteredStoresHolder>(for type: HolderType.Type) -> HolderType {
-        let key = String(describing: HolderType.StoreType.self)
+        let key = String(reflecting: HolderType.StoreType.self)
         if let storeHolder = storeHolders[key] as? HolderType { return storeHolder }
         let storeHolder = HolderType()
         storeHolders[key] = storeHolder
