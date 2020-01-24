@@ -97,6 +97,25 @@ print(a1.entity.count) // 2
 print(b.entity.count) // 1
 ```
 
+### Action with Observable
+
+```swift
+struct Store: FluxSwift.Store {
+    var x: Int = 0
+    
+    struct Set: Action {
+        let x: Int
+        func reduce(store: Store) -> Store? { Store(x: x) }
+    }
+}
+
+let store = Store().register()
+let relay = PublishRelay<Int>()
+let disposable = relay.dispatchAction(action: { Store.Set(x: $0) })
+
+relay.accept(1)
+```
+
 ## Installation
 
 ### [SwiftPM](https://github.com/apple/swift-package-manager) (Recommended)
