@@ -8,11 +8,7 @@
 import RxSwift
 
 extension ObservableType {
-    public func dispatchAction<ActionType: Action>(action: @escaping (Element) -> ActionType) -> Disposable where ActionType.StoreType: Store {
-        subscribe(onNext: { action($0).dispatch() })
-    }
-    
-    public func dispatchAction<ActionType: Action>(action: @escaping (Element) -> ActionType) -> Disposable where ActionType.StoreType: IdentifiableStore {
+    public func dispatchAction(action: @escaping (Element) -> Dispatchable) -> Disposable {
         subscribe(onNext: { action($0).dispatch() })
     }
     

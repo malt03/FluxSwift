@@ -7,23 +7,18 @@
 
 import Foundation
 
-public protocol ActionSet {
-    var actions: [AnyAction] { get }
+public protocol ActionSet: Dispatchable {
+    var actions: [Dispatchable] { get }
 }
 
 extension ActionSet {
     public func dispatch() { actions.forEach { $0.dispatch() } }
-    
-    public func any() -> AnyAction { AnyAction(actionSet: self) }
-    public func throwsAny() -> AnyThrowsAction { AnyThrowsAction(actionSet: self) }
 }
 
-public protocol ThrowsActionSet {
-    var actions: [AnyThrowsAction] { get }
+public protocol ThrowsActionSet: ThrowsDispatchable {
+    var actions: [ThrowsDispatchable] { get }
 }
 
 extension ThrowsActionSet {
     public func dispatch() throws { try actions.forEach { try $0.dispatch() } }
-    
-    public func throwsAny() -> AnyThrowsAction { AnyThrowsAction(actionSet: self) }
 }

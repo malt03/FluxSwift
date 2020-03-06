@@ -26,23 +26,23 @@ class ActionSetTests: XCTestCase {
     }
     
     struct Increment: ActionSet {
-        let actions = [
-            S.Increment().any(),
-            T.Increment().any(),
+        let actions: [Dispatchable] = [
+            S.Increment(),
+            T.Increment(),
         ]
     }
     
     struct DoubleIncrement: ActionSet {
-        let actions = [
-            Increment().any(),
-            Increment().any(),
+        let actions: [Dispatchable] = [
+            Increment(),
+            Increment(),
         ]
     }
     
     struct ThrowsIncrement: ThrowsActionSet {
-        let actions = [
-            S.Increment().throwsAny(),
-            T.Increment().throwsAny(),
+        let actions: [ThrowsDispatchable] = [
+            S.Increment(),
+            T.Increment(),
         ]
     }
     
