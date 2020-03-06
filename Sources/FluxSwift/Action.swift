@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol Action: Dispatchable {
+public protocol Action: AnyAction {
     associatedtype StoreType: StoreBase
     func reduce(store: StoreType) -> StoreType?
 }
@@ -21,7 +21,7 @@ extension Action where StoreType: IdentifiableStore {
     public func dispatch(to id: StoreType.ID) { Dispatcher.shared.dispatch(self, to: id) }
 }
 
-public protocol ThrowsAction: ThrowsDispatchable {
+public protocol ThrowsAction: AnyThrowsAction {
     associatedtype StoreType: StoreBase
     func reduce(store: StoreType) throws -> StoreType?
 }

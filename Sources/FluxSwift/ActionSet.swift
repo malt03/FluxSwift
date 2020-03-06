@@ -7,16 +7,16 @@
 
 import Foundation
 
-public protocol ActionSet: Dispatchable {
-    var actions: [Dispatchable] { get }
+public protocol ActionSet: AnyAction {
+    var actions: [AnyAction] { get }
 }
 
 extension ActionSet {
     public func dispatch() { actions.forEach { $0.dispatch() } }
 }
 
-public protocol ThrowsActionSet: ThrowsDispatchable {
-    var actions: [ThrowsDispatchable] { get }
+public protocol ThrowsActionSet: AnyThrowsAction {
+    var actions: [AnyThrowsAction] { get }
 }
 
 extension ThrowsActionSet {

@@ -1,5 +1,5 @@
 //
-//  Dispatchable.swift
+//  AnyAction.swift
 //  FluxSwift
 //
 //  Created by Koji Murata on 2020/03/06.
@@ -7,10 +7,10 @@
 
 import Foundation
 
-public protocol Dispatchable: ThrowsDispatchable {
+public protocol AnyAction: AnyThrowsAction {
     func dispatch()
 }
 
-public protocol ThrowsDispatchable {
+public protocol AnyThrowsAction {
     func dispatch() throws
 }

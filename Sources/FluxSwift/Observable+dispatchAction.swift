@@ -8,7 +8,7 @@
 import RxSwift
 
 extension ObservableType {
-    public func dispatchAction(action: @escaping (Element) -> Dispatchable) -> Disposable {
+    public func dispatchAction(action: @escaping (Element) -> AnyAction) -> Disposable {
         subscribe(onNext: { action($0).dispatch() })
     }
     
