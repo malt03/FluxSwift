@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'FluxSwift'
-    s.version          = '0.0.9'
+    s.version          = '0.0.10'
     s.summary          = 'Flux on Swift'
     
     s.description      = <<-DESC
