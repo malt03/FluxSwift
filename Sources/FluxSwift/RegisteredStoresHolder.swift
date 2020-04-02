@@ -24,6 +24,10 @@ extension RegisteredStoresHolder {
     func apply<ActionType: ThrowsAction>(action: ActionType) throws where ActionType.StoreType == StoreType {
         try each { try $0.apply(action: action) }
     }
+    
+    func apply<ActionType: AsyncAction>(action: ActionType) where ActionType.StoreType == StoreType {
+        each { $0.apply(action: action) }
+    }
 }
 
 final class RegisteredUnidentifiableStoresHolder<StoreType: Store>: RegisteredStoresHolder {
@@ -61,6 +65,10 @@ final class RegisteredIdentifiableStoresHolder<StoreType: IdentifiableStore>: Re
         try each(for: id) { try $0.apply(action: action) }
     }
     
+    func apply<ActionType: AsyncAction>(action: ActionType, to id: StoreType.ID) where ActionType.StoreType == StoreType {
+        each(for: id) { $0.apply(action: action) }
+    }
+
     private func each(for id: StoreType.ID, handler: (RegisteredStoreType) throws -> Void) rethrows {
         for (index, weakStore) in (weakStoresDict[id] ?? []).enumerated().reversed() {
             if let store = weakStore.value {
