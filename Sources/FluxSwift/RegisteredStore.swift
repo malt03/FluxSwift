@@ -29,6 +29,10 @@ public final class RegisteredStore<StoreType: StoreBase>: ObservableType {
         updateStore(try action.reduce(store: entity))
     }
     
+    func apply<ActionType: AsyncAction>(action: ActionType) where ActionType.StoreType == StoreType {
+        action.reduce(store: entity) { self.updateStore($0) }
+    }
+    
     private func updateStore(_ store: StoreType?) {
         guard let store = store else { return }
         
