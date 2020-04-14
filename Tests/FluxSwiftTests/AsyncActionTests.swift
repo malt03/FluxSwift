@@ -113,10 +113,15 @@ class AsyncActionTests: XCTestCase {
         }
         
         struct Increment: AsyncAction {
-            func reduce(store: Parent, completion: @escaping (Parent) -> Void) {
-                var tmp = store
-                tmp.counter += 1
-                DispatchQueue.global().sync { completion(tmp) }
+            struct A: Action {
+                func reduce(store: Parent) -> Parent? {
+                    var tmp = store
+                    tmp.counter += 1
+                    return tmp
+                }
+            }
+            func createAction(completion: @escaping (A) -> Void) {
+                DispatchQueue.global().sync { completion(A()) }
             }
         }
     }
@@ -125,10 +130,15 @@ class AsyncActionTests: XCTestCase {
         var counter: Int
         
         struct Increment: AsyncAction {
-            func reduce(store: Child1, completion: @escaping (Child1) -> Void) {
-                var tmp = store
-                tmp.counter += 1
-                DispatchQueue.global().sync { completion(tmp) }
+            struct A: Action {
+                func reduce(store: Child1) -> Child1? {
+                    var tmp = store
+                    tmp.counter += 1
+                    return tmp
+                }
+            }
+            func createAction(completion: @escaping (A) -> Void) {
+                DispatchQueue.global().sync { completion(A()) }
             }
         }
     }
@@ -137,10 +147,15 @@ class AsyncActionTests: XCTestCase {
         var counter: Int
         
         struct Increment: AsyncAction {
-            func reduce(store: Child2, completion: @escaping (Child2) -> Void) {
-                var tmp = store
-                tmp.counter += 1
-                DispatchQueue.global().sync { completion(tmp) }
+            struct A: Action {
+                func reduce(store: Child2) -> Child2? {
+                    var tmp = store
+                    tmp.counter += 1
+                    return tmp
+                }
+            }
+            func createAction(completion: @escaping (A) -> Void) {
+                DispatchQueue.global().sync { completion(A()) }
             }
         }
     }
