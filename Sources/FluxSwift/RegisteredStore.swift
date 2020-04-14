@@ -29,6 +29,13 @@ public final class RegisteredStore<StoreType: StoreBase>: ObservableType {
         updateStore(try action.reduce(store: entity))
     }
     
+    func apply<ActionType: AsyncAction>(action: ActionType) where ActionType.ActionType.StoreType == StoreType {
+        action.createAction(store: entity) { [weak self] in
+            guard let s = self else { return }
+            s.updateStore($0.reduce(store: s.entity))
+        }
+    }
+    
     private func updateStore(_ store: StoreType?) {
         guard let store = store else { return }
         

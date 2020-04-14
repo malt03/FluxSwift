@@ -24,6 +24,10 @@ extension RegisteredStoresHolder {
     func apply<ActionType: ThrowsAction>(action: ActionType) throws where ActionType.StoreType == StoreType {
         try each { try $0.apply(action: action) }
     }
+
+    func apply<ActionType: AsyncAction>(action: ActionType) where ActionType.ActionType.StoreType == StoreType {
+        each { $0.apply(action: action) }
+    }
 }
 
 final class RegisteredUnidentifiableStoresHolder<StoreType: Store>: RegisteredStoresHolder {

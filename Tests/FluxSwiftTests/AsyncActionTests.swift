@@ -113,15 +113,16 @@ class AsyncActionTests: XCTestCase {
         }
         
         struct Increment: AsyncAction {
+            func createAction(store: Parent, completion: @escaping (A) -> Void) {
+                DispatchQueue.global().sync { completion(A()) }
+            }
+            
             struct A: Action {
                 func reduce(store: Parent) -> Parent? {
                     var tmp = store
                     tmp.counter += 1
                     return tmp
                 }
-            }
-            func createAction(completion: @escaping (A) -> Void) {
-                DispatchQueue.global().sync { completion(A()) }
             }
         }
     }
@@ -130,15 +131,16 @@ class AsyncActionTests: XCTestCase {
         var counter: Int
         
         struct Increment: AsyncAction {
+            func createAction(store: Child1, completion: @escaping (A) -> Void) {
+                DispatchQueue.global().sync { completion(A()) }
+            }
+            
             struct A: Action {
                 func reduce(store: Child1) -> Child1? {
                     var tmp = store
                     tmp.counter += 1
                     return tmp
                 }
-            }
-            func createAction(completion: @escaping (A) -> Void) {
-                DispatchQueue.global().sync { completion(A()) }
             }
         }
     }
@@ -147,15 +149,16 @@ class AsyncActionTests: XCTestCase {
         var counter: Int
         
         struct Increment: AsyncAction {
+            func createAction(store: Child2, completion: @escaping (A) -> Void) {
+                DispatchQueue.global().sync { completion(A()) }
+            }
+            
             struct A: Action {
                 func reduce(store: Child2) -> Child2? {
                     var tmp = store
                     tmp.counter += 1
                     return tmp
                 }
-            }
-            func createAction(completion: @escaping (A) -> Void) {
-                DispatchQueue.global().sync { completion(A()) }
             }
         }
     }

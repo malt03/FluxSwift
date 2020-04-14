@@ -9,14 +9,14 @@ import Foundation
 
 public protocol AsyncAction: AnyAction {
     associatedtype ActionType: Action
-    func createAction(completion: @escaping (ActionType) -> Void)
+    func createAction(store: ActionType.StoreType, completion: @escaping (ActionType) -> Void)
 }
 
 extension AsyncAction where ActionType.StoreType: Store {
-    public func dispatch() { createAction { $0.dispatch() } }
+    public func dispatch() { Dispatcher.shared.dispatch(self) }
 }
 
 extension AsyncAction where ActionType.StoreType: IdentifiableStore {
-    public func dispatch() { createAction { $0.dispatch() } }
-    public func dispatch(to id: ActionType.StoreType.ID) { createAction { $0.dispatch(to: id) } }
+    public func dispatch() { Dispatcher.shared.dispatch(self) }
+    public func dispatch(to id: ActionType.StoreType.ID) { Dispatcher.shared.dispatch(self, to: id) }
 }
