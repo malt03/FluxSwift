@@ -6,13 +6,16 @@
 //
 
 import Foundation
+import RxSwift
 
 protocol RegisteredStoresHolder {
     associatedtype StoreType: StoreBase
     typealias RegisteredStoreType = RegisteredStore<StoreType>
 
     func append(store: RegisteredStoreType)
-    func each(handler: (RegisteredStoreType) throws -> Void) rethrows
+    
+    @discardableResult
+    func each<T>(handler: (RegisteredStoreType) throws -> T) rethrows -> [T]
     init()
 }
 
@@ -25,8 +28,8 @@ extension RegisteredStoresHolder {
         try each { try $0.apply(action: action) }
     }
 
-    func apply<ActionType: AsyncAction>(action: ActionType) where ActionType.ActionType.StoreType == StoreType {
-        each { $0.apply(action: action) }
+    func apply<ActionType: AsyncAction>(action: ActionType) -> Single<[StoreType]> where ActionType.ActionType.StoreType == StoreType {
+        Single.zip(each { $0.apply(action: action) })
     }
 }
 
@@ -38,12 +41,13 @@ final class RegisteredUnidentifiableStoresHolder<StoreType: Store>: RegisteredSt
         weakStores.append(WeakHolder(value: store))
     }
     
-    func each(handler: (RegisteredStoreType) throws -> Void) rethrows {
-        for (index, weakStore) in weakStores.enumerated().reversed() {
+    func each<T>(handler: (RegisteredStoreType) throws -> T) rethrows -> [T] {
+        try weakStores.enumerated().reversed().compactMap { (index, weakStore) -> T? in
             if let store = weakStore.value {
-                try handler(store)
+                return try handler(store)
             } else {
                 weakStores.remove(at: index)
+                return nil
             }
         }
     }
@@ -65,19 +69,19 @@ final class RegisteredIdentifiableStoresHolder<StoreType: IdentifiableStore>: Re
         try each(for: id) { try $0.apply(action: action) }
     }
     
-    private func each(for id: StoreType.ID, handler: (RegisteredStoreType) throws -> Void) rethrows {
-        for (index, weakStore) in (weakStoresDict[id] ?? []).enumerated().reversed() {
+    @discardableResult
+    private func each<T>(for id: StoreType.ID, handler: (RegisteredStoreType) throws -> T) rethrows -> [T] {
+        try (weakStoresDict[id] ?? []).enumerated().reversed().compactMap { (index, weakStore) -> T? in
             if let store = weakStore.value {
-                try handler(store)
+                return try handler(store)
             } else {
                 weakStoresDict[id]?.remove(at: index)
+                return nil
             }
         }
     }
 
-    func each(handler: (RegisteredStoreType) throws -> Void) rethrows {
-        for id in weakStoresDict.keys {
-            try each(for: id, handler: handler)
-        }
+    func each<T>(handler: (RegisteredStoreType) throws -> T) rethrows -> [T] {
+        try weakStoresDict.keys.flatMap { try each(for: $0, handler: handler) }
     }
 }

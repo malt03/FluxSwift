@@ -29,10 +29,15 @@ public final class RegisteredStore<StoreType: StoreBase>: ObservableType {
         updateStore(try action.reduce(store: entity))
     }
     
-    func apply<ActionType: AsyncAction>(action: ActionType) where ActionType.ActionType.StoreType == StoreType {
-        action.createAction(store: entity) { [weak self] in
-            guard let s = self else { return }
-            s.updateStore($0.reduce(store: s.entity))
+    func apply<ActionType: AsyncAction>(action: ActionType) -> Single<StoreType> where ActionType.ActionType.StoreType == StoreType {
+        Single<StoreType>.create { (observer) -> Disposable in
+            action.createAction(store: self.entity) { [weak self] in
+                guard let s = self else { return }
+                let store = $0.reduce(store: s.entity)
+                s.updateStore(store)
+                observer(.success(store ?? s.entity))
+            }
+            return Disposables.create()
         }
     }
     

@@ -36,7 +36,8 @@ final class Dispatcher {
         try storeHolder(for: RegisteredUnidentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
     }
     
-    func dispatch<ActionType: AsyncAction>(_ action: ActionType) where ActionType.ActionType.StoreType: Store {
+    @discardableResult
+    func dispatch<ActionType: AsyncAction>(_ action: ActionType) -> Single<[ActionType.ActionType.StoreType]> where ActionType.ActionType.StoreType: Store {
         storeHolder(for: RegisteredUnidentifiableStoresHolder<ActionType.ActionType.StoreType>.self).apply(action: action)
     }
     
@@ -50,7 +51,8 @@ final class Dispatcher {
         try storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
     }
     
-    func dispatch<ActionType: AsyncAction>(_ action: ActionType) where ActionType.ActionType.StoreType: IdentifiableStore {
+    @discardableResult
+    func dispatch<ActionType: AsyncAction>(_ action: ActionType) -> Single<[ActionType.ActionType.StoreType]> where ActionType.ActionType.StoreType: IdentifiableStore {
         storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.ActionType.StoreType>.self).apply(action: action)
     }
     
@@ -64,7 +66,8 @@ final class Dispatcher {
         try storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action, to: id)
     }
     
-    func dispatch<ActionType: AsyncAction>(_ action: ActionType, to id: ActionType.ActionType.StoreType.ID) where ActionType.ActionType.StoreType: IdentifiableStore {
+    @discardableResult
+    func dispatch<ActionType: AsyncAction>(_ action: ActionType, to id: ActionType.ActionType.StoreType.ID) -> Single<[ActionType.ActionType.StoreType]> where ActionType.ActionType.StoreType: IdentifiableStore {
         storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.ActionType.StoreType>.self).apply(action: action)
     }
     
