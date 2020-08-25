@@ -37,8 +37,8 @@ final class Dispatcher {
     }
     
     @discardableResult
-    func dispatch<ActionType: AsyncAction>(_ action: ActionType) -> Single<[ActionType.ActionType.StoreType]> where ActionType.ActionType.StoreType: Store {
-        storeHolder(for: RegisteredUnidentifiableStoresHolder<ActionType.ActionType.StoreType>.self).apply(action: action)
+    func dispatch<ActionType: AsyncAction>(_ action: ActionType) -> Single<[ActionType.StoreType]> where ActionType.StoreType: Store {
+        storeHolder(for: RegisteredUnidentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
     }
     
     // MARK: to all IdentifiableStore
@@ -52,8 +52,8 @@ final class Dispatcher {
     }
     
     @discardableResult
-    func dispatch<ActionType: AsyncAction>(_ action: ActionType) -> Single<[ActionType.ActionType.StoreType]> where ActionType.ActionType.StoreType: IdentifiableStore {
-        storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.ActionType.StoreType>.self).apply(action: action)
+    func dispatch<ActionType: AsyncAction>(_ action: ActionType) -> Single<[ActionType.StoreType]> where ActionType.StoreType: IdentifiableStore {
+        storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
     }
     
     // MARK: to specified IdentifiableStore
@@ -67,8 +67,8 @@ final class Dispatcher {
     }
     
     @discardableResult
-    func dispatch<ActionType: AsyncAction>(_ action: ActionType, to id: ActionType.ActionType.StoreType.ID) -> Single<[ActionType.ActionType.StoreType]> where ActionType.ActionType.StoreType: IdentifiableStore {
-        storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.ActionType.StoreType>.self).apply(action: action)
+    func dispatch<ActionType: AsyncAction>(_ action: ActionType, to id: ActionType.StoreType.ID) -> Single<[ActionType.StoreType]> where ActionType.StoreType: IdentifiableStore {
+        storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
     }
     
     // MARK: - private

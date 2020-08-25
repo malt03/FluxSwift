@@ -114,9 +114,9 @@ class AsyncActionTests: XCTestCase {
         }
         
         struct Increment: AsyncAction {
-            func createAction(store: Parent) -> Single<A> {
+            func createAction(store: Parent) -> Single<TypeErasedAction<Parent>> {
                 .create { (observer) -> Disposable in
-                    DispatchQueue.global().sync { observer(.success(A())) }
+                    DispatchQueue.global().sync { observer(.success(A().eraseType())) }
                     return Disposables.create()
                 }
             }
@@ -135,9 +135,9 @@ class AsyncActionTests: XCTestCase {
         var counter: Int
         
         struct Increment: AsyncAction {
-            func createAction(store: Child1) -> Single<A> {
+            func createAction(store: Child1) -> Single<TypeErasedAction<Child1>> {
                 .create { (observer) -> Disposable in
-                    DispatchQueue.global().sync { observer(.success(A())) }
+                    DispatchQueue.global().sync { observer(.success(A().eraseType())) }
                     return Disposables.create()
                 }
             }
@@ -156,9 +156,9 @@ class AsyncActionTests: XCTestCase {
         var counter: Int
         
         struct Increment: AsyncAction {
-            func createAction(store: Child2) -> Single<A> {
+            func createAction(store: Child2) -> Single<TypeErasedAction<Child2>> {
                 .create { (observer) -> Disposable in
-                    DispatchQueue.global().sync { observer(.success(A())) }
+                    DispatchQueue.global().sync { observer(.success(A().eraseType())) }
                     return Disposables.create()
                 }
             }

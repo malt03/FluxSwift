@@ -29,7 +29,7 @@ public final class RegisteredStore<StoreType: StoreBase>: ObservableType {
         updateStore(try action.reduce(store: entity))
     }
     
-    func apply<ActionType: AsyncAction>(action: ActionType) -> Single<StoreType> where ActionType.ActionType.StoreType == StoreType {
+    func apply<ActionType: AsyncAction>(action: ActionType) -> Single<StoreType> where ActionType.StoreType == StoreType {
         action.createAction(store: self.entity).map { [unowned self] (action) -> StoreType in
             let store = action.reduce(store: self.entity)
             self.updateStore(store)

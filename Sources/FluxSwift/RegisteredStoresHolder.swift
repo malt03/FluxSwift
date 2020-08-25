@@ -28,7 +28,7 @@ extension RegisteredStoresHolder {
         try each { try $0.apply(action: action) }
     }
 
-    func apply<ActionType: AsyncAction>(action: ActionType) -> Single<[StoreType]> where ActionType.ActionType.StoreType == StoreType {
+    func apply<ActionType: AsyncAction>(action: ActionType) -> Single<[StoreType]> where ActionType.StoreType == StoreType {
         Single.zip(each { $0.apply(action: action) })
     }
 }
