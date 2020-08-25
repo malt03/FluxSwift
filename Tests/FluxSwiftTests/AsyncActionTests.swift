@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import RxSwift
 @testable import FluxSwift
 
 class AsyncActionTests: XCTestCase {
@@ -113,8 +114,11 @@ class AsyncActionTests: XCTestCase {
         }
         
         struct Increment: AsyncAction {
-            func createAction(store: Parent, completion: @escaping (A) -> Void) {
-                DispatchQueue.global().sync { completion(A()) }
+            func createAction(store: Parent) -> Single<A> {
+                .create { (observer) -> Disposable in
+                    DispatchQueue.global().sync { observer(.success(A())) }
+                    return Disposables.create()
+                }
             }
             
             struct A: Action {
@@ -131,8 +135,11 @@ class AsyncActionTests: XCTestCase {
         var counter: Int
         
         struct Increment: AsyncAction {
-            func createAction(store: Child1, completion: @escaping (A) -> Void) {
-                DispatchQueue.global().sync { completion(A()) }
+            func createAction(store: Child1) -> Single<A> {
+                .create { (observer) -> Disposable in
+                    DispatchQueue.global().sync { observer(.success(A())) }
+                    return Disposables.create()
+                }
             }
             
             struct A: Action {
@@ -149,8 +156,11 @@ class AsyncActionTests: XCTestCase {
         var counter: Int
         
         struct Increment: AsyncAction {
-            func createAction(store: Child2, completion: @escaping (A) -> Void) {
-                DispatchQueue.global().sync { completion(A()) }
+            func createAction(store: Child2) -> Single<A> {
+                .create { (observer) -> Disposable in
+                    DispatchQueue.global().sync { observer(.success(A())) }
+                    return Disposables.create()
+                }
             }
             
             struct A: Action {

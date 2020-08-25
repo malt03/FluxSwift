@@ -10,7 +10,7 @@ import RxSwift
 
 public protocol AsyncAction: AnyAction {
     associatedtype ActionType: Action
-    func createAction(store: ActionType.StoreType, completion: @escaping (ActionType) -> Void)
+    func createAction(store: ActionType.StoreType) -> Single<ActionType>
 }
 
 extension AsyncAction where ActionType.StoreType: Store {
