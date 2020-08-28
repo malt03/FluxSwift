@@ -69,6 +69,10 @@ final class RegisteredIdentifiableStoresHolder<StoreType: IdentifiableStore>: Re
         try each(for: id) { try $0.apply(action: action) }
     }
     
+    func apply<ActionType: AsyncAction>(action: ActionType, to id: StoreType.ID) -> Single<[StoreType]> where ActionType.StoreType == StoreType {
+        Single.zip(each(for: id) { $0.apply(action: action) })
+    }
+    
     @discardableResult
     private func each<T>(for id: StoreType.ID, handler: (RegisteredStoreType) throws -> T) rethrows -> [T] {
         try (weakStoresDict[id] ?? []).enumerated().reversed().compactMap { (index, weakStore) -> T? in

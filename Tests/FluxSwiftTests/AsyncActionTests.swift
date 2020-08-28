@@ -120,13 +120,13 @@ class AsyncActionTests: XCTestCase {
                     return Disposables.create()
                 }
             }
-            
-            struct A: Action {
-                func reduce(store: Parent) -> Parent? {
-                    var tmp = store
-                    tmp.counter += 1
-                    return tmp
-                }
+        }
+
+        struct A: Action {
+            func reduce(store: Parent) -> Parent? {
+                var tmp = store
+                tmp.counter += 1
+                return tmp
             }
         }
     }
@@ -141,13 +141,13 @@ class AsyncActionTests: XCTestCase {
                     return Disposables.create()
                 }
             }
-            
-            struct A: Action {
-                func reduce(store: Child1) -> Child1? {
-                    var tmp = store
-                    tmp.counter += 1
-                    return tmp
-                }
+        }
+
+        struct A: Action {
+            func reduce(store: Child1) -> Child1? {
+                var tmp = store
+                tmp.counter += 1
+                return tmp
             }
         }
     }
@@ -162,13 +162,13 @@ class AsyncActionTests: XCTestCase {
                     return Disposables.create()
                 }
             }
-            
-            struct A: Action {
-                func reduce(store: Child2) -> Child2? {
-                    var tmp = store
-                    tmp.counter += 1
-                    return tmp
-                }
+        }
+
+        struct A: Action {
+            func reduce(store: Child2) -> Child2? {
+                var tmp = store
+                tmp.counter += 1
+                return tmp
             }
         }
     }

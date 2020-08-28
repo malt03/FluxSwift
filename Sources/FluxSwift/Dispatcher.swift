@@ -68,7 +68,7 @@ final class Dispatcher {
     
     @discardableResult
     func dispatch<ActionType: AsyncAction>(_ action: ActionType, to id: ActionType.StoreType.ID) -> Single<[ActionType.StoreType]> where ActionType.StoreType: IdentifiableStore {
-        storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action)
+        storeHolder(for: RegisteredIdentifiableStoresHolder<ActionType.StoreType>.self).apply(action: action, to: id)
     }
     
     // MARK: - private
