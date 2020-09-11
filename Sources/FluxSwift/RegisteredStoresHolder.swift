@@ -29,7 +29,7 @@ extension RegisteredStoresHolder {
     }
 
     func apply<ActionType: AsyncAction>(action: ActionType) -> Single<[StoreType]> where ActionType.StoreType == StoreType {
-        Single.zip(each { $0.apply(action: action) })
+        Single.zip(each { $0.apply(action: action) }).map { $0.compactMap { $0 } }
     }
 }
 
@@ -70,7 +70,7 @@ final class RegisteredIdentifiableStoresHolder<StoreType: IdentifiableStore>: Re
     }
     
     func apply<ActionType: AsyncAction>(action: ActionType, to id: StoreType.ID) -> Single<[StoreType]> where ActionType.StoreType == StoreType {
-        Single.zip(each(for: id) { $0.apply(action: action) })
+        Single.zip(each(for: id) { $0.apply(action: action) }).map { $0.compactMap { $0 } }
     }
     
     @discardableResult
